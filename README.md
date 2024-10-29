@@ -1,6 +1,9 @@
 # 雲端平台 modal 使用免費GPU
 modal給予每位用戶 $30/月 的免費計算積分，嘗試使用積分使用Jupyter啟動一個ollama的推斷伺服器，並透過ngrok穿透網路讓服務可以在自己的電腦上呼叫。
 收費標準(截2024-10-29 請依網站為準)
+
+![image](https://github.com/user-attachments/assets/912810f4-c107-41e3-aed5-1681edc64e98)
+
 https://modal.com/pricing
 | GPU Tasks          | Price      |
 | ------------------ | ---------- |
