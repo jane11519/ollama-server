@@ -21,7 +21,8 @@ app = modal.App(
     image=modal.Image.debian_slim().pip_install(
         "jupyter"
     ).apt_install(
-        "git"
+        "git",
+        "curl"
     )
 )
 volume = modal.Volume.from_name(
@@ -32,12 +33,11 @@ GGUF_DIR = "/GGUF"
 JUPYTER_TOKEN = "12345678"  # Change me to something non-guessable!
 
 
-@app.function(volumes={GGUF_DIR: volume})
+@app.function(volumes={GGUF_DIR: volume}, timeout=1000)
 def seed_volume():
     doneload_url = "https://huggingface.co/bartowski/Qwen2.5-14B-Instruct-GGUF/resolve/main/Qwen2.5-14B-Instruct-Q4_K_M.gguf"
     file_name = doneload_url.split("/")[-1] # Qwen2.5-14B-Instruct-Q4_K_M.gguf
     if not os.path.isfile(os.path.join(GGUF_DIR, file_name)):
-        subprocess.run(["cd", GGUF_DIR])
         subprocess.run(["curl", "-o", os.path.join(GGUF_DIR, file_name), "-L", doneload_url])
     
     content = """FROM /GGUF/Qwen2.5-14B-Instruct-Q4_K_M.gguf
@@ -56,8 +56,7 @@ def seed_volume():
     with open(os.path.join(GGUF_DIR, modelfile_name), 'w') as file:
         file.write(content)
     
-    subprocess.run(["cd", GGUF_DIR])
-    subprocess.run(["git", "clone", "https://github.com/jane11519/ollama-server.git"])
+    subprocess.run(["git", "clone", "https://github.com/jane11519/ollama-server.git"], cwd=GGUF_DIR)
 
     volume.commit()
 
@@ -67,17 +66,16 @@ def seed_volume():
 # This can be useful when you want to interactively engage with Volume contents
 # without having to download it to your host computer.
 
-
-@app.function(concurrency_limit=1, volumes={GGUF_DIR: volume}, timeout=1_500)
+# 要更換GPU資源更換這邊
+@app.function(concurrency_limit=1, volumes={GGUF_DIR: volume}, timeout=43200, gpu="l4")
 def run_jupyter(timeout: int):
     jupyter_port = 8888
-    subprocess.run(["cd", GGUF_DIR])
     with modal.forward(jupyter_port) as tunnel:
         jupyter_process = subprocess.Popen(
             [
                 "jupyter",
                 "notebook",
-                "./",
+                os.path.join(GGUF_DIR, "ollama-server"),
                 "--no-browser",
                 "--allow-root",
                 "--ip=0.0.0.0",
@@ -102,7 +100,7 @@ def run_jupyter(timeout: int):
 
 
 @app.local_entrypoint()
-def main(timeout: int = 10_000):
+def main(timeout: int = 43200):
     # Write some images to a volume, for demonstration purposes.
     seed_volume.remote()
     # Run the Jupyter Notebook server
