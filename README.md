@@ -20,12 +20,12 @@ pip install modal
 ```
 ## 設定API key
 至[[https://modal.com/]]註冊帳號後，前往設定中的API Tokens建立新的Tokens以後使用以下指令設定
-![create_api_token](image\createapitoken.jpeg)
+![create_api_token](image/createapitoken.jpeg)
 ```
 modal token set --token-id ak-47N4...kF --token-secret as-CyVI...bgA
 ```
 設定後會進行驗證
-![set_api_toker](image\setapitoker.jpeg)
+![set_api_toker](image/setapitoker.jpeg)
 
 ## 啟動遠端的Jupyter
 在本地端輸入來啟動遠端容器
@@ -33,25 +33,25 @@ modal token set --token-id ak-47N4...kF --token-secret as-CyVI...bgA
 modal run jupyter_inside_modal.py
 ```
 容器建立時會同時建立Volume來下載並保存GGUF，這樣之後就不用再次下載，同時也會去clone要啟動ollama的相關jupyter
-![](image\download_guff.jpeg)
+![](image/download_guff.jpeg)
 
 完成下載與建置後會看到jupyter的進入URL
-![](image\show_jupyter_url.jpeg)
+![](image/show_jupyter_url.jpeg)
 
 進入後輸入設定的JUPYTER_TOKEN
-![](image\jupyter_password.jpeg)
+![](image/jupyter_password.jpeg)
 
 進入modal-ollama-server.ipynb後
 需修改最後一個cell中ngrok的authtoken
-![](image\change_authtoken.jpeg)
+![](image/change_authtoken.jpeg)
 前往 https://ngrok.com/ 建立一個帳號後
 前往 https://dashboard.ngrok.com/get-started/your-authtoken 取的你的authtoken
-![](image\ngrok_authtoken.jpeg)
+![](image/ngrok_authtoken.jpeg)
 
 修改完成後就<span style="background:#fff88f">從頭執行所有cell</span>
 
 執行後無錯誤就會看到映射到ollama服務的url
-![](image\call_llm_api_url.jpeg)
+![](image/call_llm_api_url.jpeg)
 
 ## 使用open ai 套件呼叫
 
@@ -76,8 +76,8 @@ print(response_content)
 
 前往 https://modal.com/apps
 
-![](image\showapp.png)
+![](image/showapp.png)
 
 Stop app即可終止
 
-![](image\stop_app.png)
+![](image/stop_app.png)
